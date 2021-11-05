@@ -1,0 +1,43 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+
+```{r}
+data <- read.csv("permutations.csv",sep =" ")
+s <- length(data)
+for (i in 1:s) {
+ print(chisq.test(table(data[,i]), p = rep(1/s, s)))
+}
+
+```
+
+
+```{r}
+cycles_amount_data <- read.csv("cycles_amount_vec.csv")
+k <- 3 # Cчитали количество циклов длины 3
+n <- length(cycles_amount_data$val)
+table(cycles_amount_data)
+meanCycles <- mean(cycles_amount_data$val)
+d <- table(cycles_amount_data)
+chisq.test(d, p  =dpois(length(cycles_amount_data$val),lambda = meanCycles))
+probs <- dpois(0:(length(d) - 1),lambda = 1/k)
+expectedValues <-  round(expectedFrequency * length(cycles_amount_data$val),3)
+```
+
+```{r}
+probs[length(probs) - 1] <- probs[length(probs) - 1] + probs[length(probs)]
+probs <- probs[1:length(probs) - 1]
+(n * probs) > 5
+```
+```{r}
+d[length(d) - 1] <- d[length(d) - 1] + d[length(d)]
+d <- d[1:length(d) - 1]
+d
+```
+```{r}
+chisq.test(d, p  = probs ,rescale.p = TRUE)
+```
+
